@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>グループ登録画面</title>
+  </head>
+  <body>
+    <header>
+      <h1>📘 グループ登録</h1>
+      <p>授業ごとのグループを登録し、ドキュメントを共有できます。</p>
+    </header>
+
+    <main>
+      <form action="#" method="post">
+        <!-- 授業名入力欄 -->
+        <section>
+          <label for="class-name"><strong>授業名：</strong></label
+          ><br />
+          <input
+            type="text"
+            id="class-name"
+            name="class-name"
+            placeholder="例：情報処理基礎"
+            required
+          />
+        </section>
+        <br />
+
+        <!-- グループ名入力欄 -->
+        <section>
+          <label for="group-name"><strong>グループ名：</strong></label
+          ><br />
+          <input
+            type="text"
+            id="group-name"
+            name="group-name"
+            placeholder="例：チームA"
+            required
+          />
+        </section>
+        <br />
+
+        <!-- メンバー名入力欄 -->
+        <section>
+          <label for="members"><strong>メンバー名：</strong></label
+          ><br />
+          <textarea
+            id="members"
+            name="members"
+            rows="4"
+            placeholder="例：山田太郎, 佐藤花子, 鈴木一郎"
+            required
+          ></textarea>
+        </section>
+        <br />
+
+        <!-- ドキュメント登録 -->
+        <section>
+          <label for="document"><strong>ドキュメント登録：</strong></label
+          ><br />
+          <input type="file" id="document" name="document" multiple />
+        </section>
+        <br />
+
+        <!-- LINE連携欄 -->
+        <section>
+          <label for="line-link"><strong>LINE連携：</strong></label
+          ><br />
+          <input
+            type="text"
+            id="line-link"
+            name="line-link"
+            placeholder="LINEグループ招待リンクを入力"
+          />
+        </section>
+        <br />
+
+        <!-- 登録ボタン -->
+        <section>
+          <button type="submit">登録する</button>
+        </section>
+      </form>
+    </main>
+  </body>
+</html>
