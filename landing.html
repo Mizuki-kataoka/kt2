@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>あなたの頑張り見える化します</title>
+</head>
+<body>
+  <!-- ヘッダー部分 -->
+  <header>
+    <h1>あなたの頑張り見える化します</h1>
+    <nav>
+      <ul>
+        <li><a href="register.html">アカウント登録</a></li>
+        <li><a href="login.html">ログイン</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main>
+    <!-- サイト紹介部分 -->
+    <section id="about">
+      <h2>サイトについて</h2>
+      <p>
+        このサイトでは、学習時間の記録や課題のアップロードを通じて、あなたの努力を「見える化」します。  
+        自分の成長を振り返り、モチベーションを高めることができます。
+      </p>
+      <div class="image-area">
+        <!-- 画像を配置する部分 -->
+        <img src="images/sample.png" alt="学習イメージ">
+      </div>
+    </section>
+
+    <!-- フィードバックコメント部分 -->
+    <section id="feedback">
+      <h2>ユーザーの声</h2>
+      <!-- コメント投稿フォーム -->
+      <form id="feedback-form">
+        <label for="comment">コメントを投稿してください:</label><br>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea><br>
+        <button type="submit">投稿</button>
+      </form>
+
+      <!-- コメント一覧表示 -->
+      <div id="comments">
+        <h3>投稿されたコメント</h3>
+        <ul>
+          <!-- コメントがここに追加される -->
+          <li>例: とても使いやすいです！</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer>
+    <p>&copy; 2025 あなたの頑張り見える化します</p>
+  </footer>
+
+  <!-- コメント投稿用の簡易スクリプト -->
+  <script>
+    const form = document.getElementById('feedback-form');
+    const commentsList = document.querySelector('#comments ul');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const commentText = document.getElementById('comment').value;
+      if (commentText.trim() !== "") {
+        const newComment = document.createElement('li');
+        newComment.textContent = commentText;
+        commentsList.appendChild(newComment);
+        document.getElementById('comment').value = "";
+      }
+    });
+  </script>
+</body>
+</html>
