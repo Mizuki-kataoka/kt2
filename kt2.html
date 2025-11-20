@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生成果記録・評価システム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="start-screen" class="screen-container">
+        <div class="start-content">
+            <h1>プロジェクト活動開始</h1>
+            <p>以下のボタンを押して、作業と記録を開始してください。</p>
+            <button onclick="startWork()" class="btn-start">作業を開始する (タイマーON)</button>
+        </div>
+    </div>
+
+    <div id="workspace-screen" class="screen-container" style="display: none;">
+        
+        <header class="workspace-header">
+            <h2>ワークスペース</h2>
+            <button onclick="finishWork()" class="btn-finish">作業を終了して評価を見る</button>
+        </header>
+
+        <div class="features-container">
+            
+            <section class="feature-item item-1">
+                <h3>① 作業時間の記録</h3>
+                <div class="timer-display">
+                    <span id="timer-display">00:00:00</span>
+                </div>
+                <p class="desc">作業中、自動で記録されています</p>
+            </section>
+
+            <section class="feature-item item-2">
+                <h3>② 対面ミーティングの様子</h3>
+                <p class="desc">活動中の写真をアップロードしてください</p>
+                <input type="file" id="meeting-photo" accept="image/*">
+            </section>
+
+            <section class="feature-item item-3">
+                <h3>③ ドキュメント入力文字数</h3>
+                <p class="desc">共有ファイルの入力文字数を記録</p>
+                <input type="number" id="doc-char-count" placeholder="入力例: 1500">
+            </section>
+
+            <section class="feature-item item-4 full-width">
+                <h3>④ 思考プロセス・アイデア共有</h3>
+                <p class="desc">思考やアイデアを入力（「共有」で匿名掲示板に反映されます）</p>
+                
+                <div class="thought-area">
+                    <textarea id="thought-input" placeholder="今の考え、悩み、アイデアなどを入力..."></textarea>
+                    <button onclick="shareThought()" class="btn-primary">匿名でグループに共有</button>
+                </div>
+
+                <div class="anonymous-board">
+                    <h4>みんなの投稿（匿名）</h4>
+                    <div id="board-container">
+                        </div>
+                </div>
+            </section>
+
+            <section class="feature-item item-5">
+                <h3>⑤ 最終成果物の提出</h3>
+                <p class="desc">完成した成果物をアップロード</p>
+                <input type="file" id="final-deliverable">
+            </section>
+
+            <section class="feature-item item-6">
+                <h3>⑥ LINE発言回数の記録</h3>
+                <p class="desc">グループチャットでの発言数</p>
+                <input type="number" id="line-msg-count" placeholder="入力例: 45">
+            </section>
+
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen-container" style="display: none;">
+        <div class="result-content">
+            <h1>お疲れ様でした</h1>
+            <p>今回の活動評価は以下の通りです。</p>
+
+            <section class="score-section">
+                <h2>⑦ グループへの貢献度</h2>
+                <div class="score-circle">
+                    <span id="final-score">0</span>%
+                </div>
+                <p>※提出物や作業量から算出された数値です</p>
+            </section>
+
+            <div class="result-details">
+                <h4>詳細データ</h4>
+                <ul>
+                    <li>作業時間: <span id="res-time">00:00:00</span></li>
+                    <li>写真提出: <span id="res-photo">なし</span></li>
+                    <li>文字数: <span id="res-char">0</span> 文字</li>
+                    <li>思考共有: <span id="res-thought">0</span> 回</li>
+                    <li>成果物: <span id="res-file">なし</span></li>
+                    <li>LINE発言: <span id="res-line">0</span> 回</li>
+                </ul>
+            </div>
+
+            <button onclick="location.reload()" class="btn-reset">トップに戻る</button>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let tInterval;
+        let totalSeconds = 0;
+        let thoughtCount = 0;
+
+        // --- スタート画面 -> 作業画面 ---
+        function startWork() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('workspace-screen').style.display = 'block';
+            
+            startTime = new Date().getTime();
+            tInterval = setInterval(updateTimer, 1000);
+        }
+
+        // タイマー処理
+        function updateTimer() {
+            let updatedTime = new Date().getTime();
+            let difference = updatedTime - startTime;
+            totalSeconds = Math.floor(difference / 1000);
+
+            let h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            let s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            document.getElementById("timer-display").innerHTML = h + ':' + m + ':' + s;
+        }
+
+        // --- ④ 思考プロセス共有機能 ---
+        function shareThought() {
+            const input = document.getElementById('thought-input');
+            const text = input.value;
+            if (text.trim() === "") return;
+
+            const container = document.getElementById('board-container');
+            const now = new Date().toLocaleTimeString();
+
+            const div = document.createElement('div');
+            div.className = 'board-post';
+            div.innerHTML = `<p>${text}</p><span class="date">${now} (匿名)</span>`;
+            
+            container.prepend(div);
+            input.value = "";
+            thoughtCount++;
+        }
+
+        // --- 作業終了 -> 結果画面 ---
+        function finishWork() {
+            clearInterval(tInterval);
+            document.getElementById('workspace-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            
+            calculateScore();
+        }
+
+        // --- ⑦ 評価計算機能 ---
+        function calculateScore() {
+            // 各値の取得
+            const charVal = parseInt(document.getElementById('doc-char-count').value) || 0;
+            const lineVal = parseInt(document.getElementById('line-msg-count').value) || 0;
+            const hasPhoto = document.getElementById('meeting-photo').files.length > 0;
+            const hasFile = document.getElementById('final-deliverable').files.length > 0;
+
+            // 表示用データのセット
+            document.getElementById('res-time').innerText = document.getElementById("timer-display").innerHTML;
+            document.getElementById('res-photo').innerText = hasPhoto ? "あり" : "なし";
+            document.getElementById('res-char').innerText = charVal;
+            document.getElementById('res-thought').innerText = thoughtCount;
+            document.getElementById('res-file').innerText = hasFile ? "あり" : "なし";
+            document.getElementById('res-line').innerText = lineVal;
+
+            // スコア計算（仮）
+            let score = 0;
+            score += Math.floor(totalSeconds / 60); // 1分1点
+            score += hasPhoto ? 50 : 0;
+            score += charVal * 0.1;
+            score += thoughtCount * 20;
+            score += hasFile ? 100 : 0;
+            score += lineVal * 2;
+
+            let percentage = Math.min(100, Math.floor((score / 500) * 100));
+            document.getElementById('final-score').innerText = percentage;
+        }
+    </script>
+</body>
+</html>
