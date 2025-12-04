@@ -1,0 +1,292 @@
+/*
+ * 基本設定とフォント
+ */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    background-color: #f8f8fa; /* 薄いグレーがかった背景 */
+    color: #333333; /* 文字色 */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #cc6699; /* アクセントカラー（ローズピンク） */
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #f9e2eb; /* 薄いピンクのボーダー */
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/*
+ * レイアウトコンテナ
+ */
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 20px; /* 角丸 */
+    box-shadow: 0 10px 30px rgba(204, 102, 153, 0.1); /* 優しい影 */
+}
+
+/*
+ * フォームと入力要素 (group.sentaku.html, login.html)
+ */
+form section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff9fc; /* 非常に薄いピンクの背景 */
+    border-radius: 12px;
+    border: 1px solid #f0d8e8;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #cc6699;
+    outline: none;
+    box-shadow: 0 0 5px rgba(204, 102, 153, 0.3);
+}
+
+/*
+ * ボタン
+ */
+button, .btn-primary, .btn-finish, .btn-start, .btn-reset {
+    background-color: #ff99cc; /* 濃いピンク */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px; /* 丸いボタン */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(255, 153, 204, 0.4);
+    font-weight: bold;
+}
+
+button:hover, .btn-primary:hover, .btn-finish:hover, .btn-start:hover, .btn-reset:hover {
+    background-color: #cc6699;
+    transform: translateY(-2px);
+}
+
+/*
+ * マイページ (mypage.html) 特有のスタイル
+ */
+
+/* アカウント情報アイコン */
+.account-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.account-info > div:first-child {
+    /* HTMLでインラインスタイルを使っているため、CSSで上書きが難しいが、参照しやすいクラスを設定 */
+    /* HTML側のインラインスタイルを優先します */
+}
+
+/* グループ一覧テーブル */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
+    border-radius: 10px;
+    overflow: hidden; /* 角丸のために必要 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+th {
+    background-color: #cc6699; /* ヘッダーをピンクに */
+    color: white;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+tr:nth-child(even) {
+    background-color: #fcfcfc; /* 偶数行をわずかに着色 */
+}
+
+td a {
+    color: #ff99cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+td a:hover {
+    text-decoration: underline;
+    color: #cc6699;
+}
+
+/*
+ * 評価画面 (kt2.html) 特有のスタイル
+ */
+.screen-container {
+    padding: 20px;
+}
+
+.workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.features-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.feature-item {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0d8e8;
+}
+
+.feature-item.full-width {
+    grid-column: 1 / -1; /* 思考プロセスは全幅に */
+}
+
+/* タイマー表示 */
+.timer-display span {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ff99cc;
+    margin: 10px 0;
+}
+
+/* 思考プロセス・匿名掲示板 */
+.thought-area {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.thought-area textarea {
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+
+.anonymous-board {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.board-post {
+    padding: 10px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.board-post:last-child {
+    border-bottom: none;
+}
+
+.board-post .date {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* 貢献度サークル (Result Screen) */
+.score-section {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    background-color: #f9e2eb; /* 薄いピンクの背景 */
+    border: 8px solid #cc6699; /* ローズピンクの枠線 */
+    border-radius: 50%;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #cc6699;
+}
+
+/* 結果詳細 */
+.result-details ul {
+    list-style: none;
+    padding: 0;
+    background-color: #fff9fc;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #f0d8e8;
+}
+
+.result-details li {
+    padding: 5px 0;
+    border-bottom: 1px dotted #e0e0e0;
+}
+
+.result-details li:last-child {
+    border-bottom: none;
+}
+
+/* フッター */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin-top: 30px;
+}
+
+/* ヘッダーに戻るリンクの位置調整 */
+.workspace-header a {
+    position: absolute;
+    left: 40px;
+    color: #cc6699 !important; /* 強制的にピンクに */
+}
+
+/* kt2.htmlのスタート/リザルト画面の配置 */
+.start-content, .result-content {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.start-content p, .result-content p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
