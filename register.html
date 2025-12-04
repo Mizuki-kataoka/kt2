@@ -10,7 +10,7 @@
   </header>
 
   <main>
-    <form action="landing.html" method="get">
+    <form id="registerForm">
       <!-- 生徒か教授か選択 -->
       <label for="role">区分:</label>
       <select id="role" name="role" required>
@@ -43,6 +43,46 @@
   <footer>
     <p>&copy; 2025 あなたの頑張り見える化します</p>
   </footer>
-</body>
 
+  <!-- Firebase SDK を組み込み -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // ★ここに Firebase コンソールで表示された設定を貼り付ける
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
+      authDomain: "isd-kt2.firebaseapp.com",
+      projectId: "isd-kt2",
+      storageBucket: "isd-kt2.appspot.com",
+      messagingSenderId: "302204280336",
+      appId: "1:302204280336:web:c9501e1a34618e9f46b495"
+    };
+
+    // Firebase 初期化
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // フォーム送信イベント
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
+      event.preventDefault(); // ページ遷移を止める
+
+      const role = document.getElementById("role").value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const iconColor = document.getElementById("iconColor").value;
+
+      try {
+        await addDoc(collection(db, "users"), {
+          role, name, email, iconColor, createdAt: new Date()
+        });
+        alert("登録が完了しました！");
+        window.location.href = "login.html"; // 保存後に login.html へ遷移
+      } catch (e) {
+        console.error("Error adding document: ", e);
+        alert("登録に失敗しました。");
+      }
+    });
+  </script>
+</body>
 </html>
