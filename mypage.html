@@ -55,23 +55,23 @@
             <tr>
               <td style="padding: 8px;">情報処理基礎</td>
               <td style="padding: 8px;">
-                <a href="kt2.html">チームA</a>
+                <a href="kt2.html?group=teamA">チームA</a>
               </td>
-              <td style="padding: 8px;">85%</td>
+              <td style="padding: 8px;" id="contribution-teamA">85%</td>
             </tr>
             <tr>
               <td style="padding: 8px;">経済学入門</td>
               <td style="padding: 8px;">
-                <a href="kt2.html">第3グループ</a>
+                <a href="kt2.html?group=group3">第3グループ</a>
               </td>
-              <td style="padding: 8px;">70%</td>
+              <td style="padding: 8px;" id="contribution-group3">70%</td>
             </tr>
             <tr>
               <td style="padding: 8px;">応用数学</td>
               <td style="padding: 8px;">
-                <a href="kt2.html">数理研</a>
+                <a href="kt2.html?group=mathLab">数理研</a>
               </td>
-              <td style="padding: 8px;">92%</td>
+              <td style="padding: 8px;" id="contribution-mathLab">92%</td>
             </tr>
             </tbody>
         </table>
@@ -98,5 +98,38 @@
         &copy; 2025 あなたの頑張り見える化します
       </p>
     </footer>
+
+    <script>
+        // URLのクエリパラメータから値を取得する関数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            // 結果がなければ空文字列、あればデコードした値を返す
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+        // kt2.htmlから戻ったときに貢献度を更新する関数
+        function updateContributionFromURL() {
+            const score = getUrlParameter('score');
+            const groupId = getUrlParameter('group'); // kt2.htmlから渡されるグループID
+
+            if (score !== '' && groupId !== '') {
+                // グループIDに対応する貢献度表示セルを取得
+                const contributionCell = document.getElementById(`contribution-${groupId}`);
+
+                if (contributionCell) {
+                    contributionCell.innerText = `${score}%`;
+                    
+                    // スコアが反映された後、URLからパラメータを削除して履歴を置き換える
+                    // これにより、マイページをリロードしても古いスコアが適用されるのを防ぎます
+                    history.replaceState(null, document.title, "mypage.html");
+                }
+            }
+        }
+
+        // ページ読み込み時に更新処理を実行
+        updateContributionFromURL();
+    </script>
   </body>
 </html>
