@@ -11,76 +11,76 @@
     </header>
 
     <main>
-      <form action="kt2.html" method="get">
-        <!-- 授業名入力欄 -->
-        <section>
-          <label for="class-name"><strong>授業名：</strong></label
-          ><br />
-          <input
-            type="text"
-            id="class-name"
-            name="class-name"
-            placeholder="例：情報処理基礎"
-            required
-          />
-        </section>
-        <br />
+      <form action="kt2.html" method="get" target="_blank">
+  <section>
+    <label for="class-name"><strong>授業名：</strong></label
+    ><br />
+    <input
+      type="text"
+      id="class-name"
+      name="course" 
+      placeholder="例：情報処理基礎"
+      required
+    />
+  </section>
+  <br />
 
-        <!-- グループ名入力欄 -->
-        <section>
-          <label for="group-name"><strong>グループ名：</strong></label
-          ><br />
-          <input
-            type="text"
-            id="group-name"
-            name="group-name"
-            placeholder="例：チームA"
-            required
-          />
-        </section>
-        <br />
+  <section>
+    <label for="group-name"><strong>グループ名：</strong></label
+    ><br />
+    <input
+      type="text"
+      id="group-name"
+      name="group" 
+      placeholder="例：チームA"
+      required
+    />
+  </section>
+  <br />
 
-        <!-- メンバー名入力欄 -->
-        <section>
-          <label for="members"><strong>メンバー名：</strong></label
-          ><br />
-          <textarea
-            id="members"
-            name="members"
-            rows="4"
-            placeholder="例：山田太郎, 佐藤花子, 鈴木一郎"
-            required
-          ></textarea>
-        </section>
-        <br />
+  <section>
+    <label for="members"><strong>メンバー名：</strong></label
+    ><br />
+    <textarea
+      id="members"
+      name="members"
+      rows="4"
+      placeholder="例：山田太郎, 佐藤花子, 鈴木一郎"
+      required
+    ></textarea>
+  </section>
+  <br />
 
-        <!-- ドキュメント登録 -->
-        <section>
-          <label for="document"><strong>ドキュメント登録：</strong></label
-          ><br />
-          <input type="file" id="document" name="document" multiple />
-        </section>
-        <br />
+  <section>
+    <label for="document"><strong>ドキュメント登録：</strong></label
+    ><br />
+    <input type="file" id="document" name="document" multiple />
+  </section>
+  <br />
 
-        <!-- LINE連携欄 -->
-        <section>
-          <label for="line-link"><strong>LINE連携：</strong></label
-          ><br />
-          <input
-            type="text"
-            id="line-link"
-            name="line-link"
-            placeholder="LINEグループ招待リンクを入力"
-          />
-        </section>
-        <br />
+  <section>
+    <label for="line-link"><strong>LINE連携：</strong></label
+    ><br />
+    <input
+      type="text"
+      id="line-link"
+      name="line-link"
+      placeholder="LINEグループ招待リンクを入力"
+    />
+  </section>
+  <br />
 
-        <!-- 登録ボタン -->
-        <section>
-          <button type="submit">登録する</button>
-        </section>
-      </form>
+  <input type="hidden" name="p-time" value="100">
+  <input type="hidden" name="p-photo" value="50">
+  <input type="hidden" name="p-char" value="100">
+  <input type="hidden" name="p-thought" value="150">
+  <input type="hidden" name="p-file" value="100">
+  <input type="hidden" name="p-line" value="50">
+  <input type="hidden" name="comment" value="今回の作業は計画通り進んでおり、非常に良かったです。">
+  <section>
+    <button type="submit">登録する</button>
+  </section>
+</form>
     </main>
   </body>
 </html>
-

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>先生用評価設定画面</title>
+    <style>
+        /* ... (既存のスタイルは変更なし) ... */
+        body { font-family: sans-serif; padding: 20px; }
+        h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        .input-group label { display: inline-block; width: 250px; margin-top: 5px; }
+        .input-group input[type="number"] { padding: 5px; width: 80px; text-align: right; border: 1px solid #ccc; }
+        
+        #link-display { margin-top: 30px; padding: 15px; border: 2px dashed #007bff; background-color: #f0f8ff; }
+        #student-link { display: block; word-break: break-all; margin-top: 10px; color: #007bff; }
+        #total-score { font-weight: bold; color: green; }
+        textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #ccc; margin-top: 5px; } /* 追加 */
+    </style>
+</head>
+<body>
+
+    <h1>先生用 授業評価基準設定</h1>
+    
+    <label for="course-name">授業名:</label>
+    <input type="text" id="course-name" value="情報処理基礎" oninput="updateLink()">
+    
+    <h3>各項目への評価配点 (最大点)</h3>
+    <p>以下の点数の合計が、総合評価の最大基準点となります。</p>
+
+    <div class="input-group">
+        <label for="p-time">① 作業時間の貢献度（最大点）：</label>
+        <input type="number" id="p-time" value="100" min="0" oninput="updateLink()">
+    </div>
+    <div class="input-group">
+        <label for="p-photo">② 対面ミーティング写真提出（最大点）：</label>
+        <input type="number" id="p-photo" value="50" min="0" oninput="updateLink()">
+    </div>
+    <div class="input-group">
+        <label for="p-char">③ ドキュメント入力文字数（最大点）：</label>
+        <input type="number" id="p-char" value="100" min="0" oninput="updateLink()">
+    </div>
+    <div class="input-group">
+        <label for="p-thought">④ 思考プロセス・アイデア共有回数（最大点）：</label>
+        <input type="number" id="p-thought" value="150" min="0" oninput="updateLink()">
+    </div>
+    <div class="input-group">
+        <label for="p-file">⑤ 最終成果物の提出（最大点）：</label>
+        <input type="number" id="p-file" value="100" min="0" oninput="updateLink()">
+    </div>
+    <div class="input-group">
+        <label for="p-line">⑥ LINE発言回数の記録（最大点）：</label>
+        <input type="number" id="p-line" value="50" min="0" oninput="updateLink()">
+    </div>
+    
+    <p>合計最大基準点: <span id="total-score">500</span> 点</p>
+    
+    <label for="comment-input">評価コメント:</label>
+    <textarea id="comment-input" oninput="updateLink()" placeholder="ここにグループへのコメントを入力してください。"></textarea>
+    <div id="link-display">
+        <h2>学生向けワークスペースリンク</h2>
+        <p>以下のリンクを学生に共有してください。設定内容が反映されます。</p>
+        <a id="student-link" href="#" target="_blank">kt2.html?course=...</a>
+    </div>
+
+    <script>
+        const scoreFields = ['p-time', 'p-photo', 'p-char', 'p-thought', 'p-file', 'p-line'];
+
+        function updateLink() {
+            const course = document.getElementById('course-name').value.trim();
+            const comment = document.getElementById('comment-input').value.trim(); // コメントを取得
+            
+            const encodedCourse = encodeURIComponent(course);
+            const encodedComment = encodeURIComponent(comment); // URLエンコード
+
+            let totalScore = 0;
+            // ⭐️ コメントもクエリパラメータに追加 ⭐️
+            let queryParams = `course=${encodedCourse}&comment=${encodedComment}`; 
+            
+            scoreFields.forEach(id => {
+                const score = parseInt(document.getElementById(id).value) || 0;
+                queryParams += `&${id}=${score}`;
+                totalScore += score;
+            });
+
+            document.getElementById('total-score').innerText = totalScore;
+
+            const newUrl = `kt2.html?${queryParams}`;
+            
+            const linkElement = document.getElementById('student-link');
+            linkElement.href = newUrl;
+            linkElement.innerText = newUrl;
+        }
+
+        updateLink();
+    </script>
+</body>
+</html>

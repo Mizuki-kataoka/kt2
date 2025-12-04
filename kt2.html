@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学生成果記録・評価システム</title>
     <link rel="stylesheet" href="style.css">
-</head>
+    </head>
 <body>
 
     <div id="start-screen" class="screen-container">
@@ -82,6 +82,10 @@
     <div id="result-screen" class="screen-container" style="display: none;">
         <div class="result-content">
             <h1>お疲れ様でした</h1>
+            
+            <h2 id="final-class-name">授業名: 未設定の授業</h2> 
+            <p id="final-group-name">グループ名: 未設定</p> 
+            
             <p>今回の活動評価は以下の通りです。</p>
 
             <section class="score-section">
@@ -103,6 +107,13 @@
                     <li>LINE発言: <span id="res-line">0</span> 回</li>
                 </ul>
             </div>
+            <div>
+            <section class="teacher-comment-section">
+            <h4>先生からの評価コメント</h4>
+            <p id="teacher-comment-display">コメントがありません。</p>
+            </section>
+        </div>
+
 
             <button onclick="backToMyPage()" class="btn-reset">マイページに戻る</button>
         </div>
@@ -114,12 +125,47 @@
         let totalSeconds = 0;
         let thoughtCount = 0;
         let finalPercentage = 0;
-        let currentGroupId = ''; // 【追加】現在のグループIDを保持する変数
+        let currentGroupId = '';
 
-        // 【追加】ページ読み込み時にURLからグループIDを取得
+        // ⭐️ 各項目の「満点相当となる活動の最大基準値」を定義 (定数) ⭐️
+        // 実際の活動量がこの値に達すると、その項目の配点が満点として獲得されます。
+        const ACTIVITY_MAX = {
+            'p-time': 120 * 60,   // 作業時間：120分（2時間）で満点とする (秒)
+            'p-char': 2000,       // 文字数：2000文字で満点とする
+            'p-line': 50          // LINE発言：50回で満点とする
+        };
+
+        // URLからフォームの送信データ（授業名、グループ名、配点）を取得
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const urlParams = new URLSearchParams(queryString);
+            
+            // 授業名とグループ名の取得
+            params.courseName = urlParams.get('course') || "未設定の授業";
+            params.groupName = urlParams.get('group') || "未設定";
+
+            // 各配点を数値として取得 (フォームの隠しフィールドから)
+            // name属性と一致しているか確認してください (p-time, p-photo, ...)
+            params.pTime = parseInt(urlParams.get('p-time')) || 0;
+            params.pPhoto = parseInt(urlParams.get('p-photo')) || 0;
+            params.pChar = parseInt(urlParams.get('p-char')) || 0;
+            params.pThought = parseInt(urlParams.get('p-thought')) || 0;
+            params.pFile = parseInt(urlParams.get('p-file')) || 0;
+            params.pLine = parseInt(urlParams.get('p-line')) || 0;
+            
+            // 合計最大基準点を計算 (これが評価の分母になる)
+            params.maxTotalScore = params.pTime + params.pPhoto + params.pChar + 
+                                   params.pThought + params.pFile + params.pLine;
+            
+            return params;
+        }
+
+
+        // 【修正】ページ読み込み時にURLからグループID/名前を取得
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            currentGroupId = urlParams.get('group') || '';
+            const params = getQueryParams();
+            currentGroupId = params.groupName; // groupNameをIDとして利用
         };
 
         // --- スタート画面 -> 作業画面 ---
@@ -131,7 +177,7 @@
             tInterval = setInterval(updateTimer, 1000);
         }
 
-        // タイマー処理
+        // タイマー処理 (変更なし)
         function updateTimer() {
             let updatedTime = new Date().getTime();
             let difference = updatedTime - startTime;
@@ -148,7 +194,7 @@
             document.getElementById("timer-display").innerHTML = h + ':' + m + ':' + s;
         }
 
-        // --- ④ 思考プロセス共有機能 ---
+        // --- ④ 思考プロセス共有機能 (変更なし) ---
         function shareThought() {
             const input = document.getElementById('thought-input');
             const text = input.value;
@@ -172,44 +218,74 @@
             document.getElementById('workspace-screen').style.display = 'none';
             document.getElementById('result-screen').style.display = 'block';
             
+            // 授業名とグループ名を設定
+            const { courseName, groupName } = getQueryParams();
+            document.getElementById('final-class-name').innerText = `授業名: ${courseName}`;
+            document.getElementById('final-group-name').innerText = `グループ名: ${groupName}`;
+            
             calculateScore();
         }
 
-        // --- ⑦ 評価計算機能 ---
+        // --- ⑦ 評価計算機能 (配点に基づいて計算) ---
         function calculateScore() {
+            const params = getQueryParams();
+            
             // 各値の取得
             const charVal = parseInt(document.getElementById('doc-char-count').value) || 0;
             const lineVal = parseInt(document.getElementById('line-msg-count').value) || 0;
             const hasPhoto = document.getElementById('meeting-photo').files.length > 0;
             const hasFile = document.getElementById('final-deliverable').files.length > 0;
 
-            // 表示用データのセット
+            let totalEarnedScore = 0;
+
+            // 1. 作業時間 (p-time)
+            // 獲得点数 = 先生の配点 * (実際の時間 / 満点基準時間)
+            let timeRatio = Math.min(1, totalSeconds / ACTIVITY_MAX['p-time']);
+            totalEarnedScore += timeRatio * params.pTime;
+
+            // 2. 写真提出 (p-photo)
+            // 提出があれば満点を獲得
+            totalEarnedScore += hasPhoto ? params.pPhoto : 0;
+
+            // 3. 文字数 (p-char)
+            let charRatio = Math.min(1, charVal / ACTIVITY_MAX['p-char']);
+            totalEarnedScore += charRatio * params.pChar;
+            
+            // 4. 思考共有回数 (p-thought)
+            // 思考共有の満点基準を5回と仮定
+            let thoughtRatio = Math.min(1, thoughtCount / 5); 
+            totalEarnedScore += thoughtRatio * params.pThought;
+
+            // 5. 成果物提出 (p-file)
+            totalEarnedScore += hasFile ? params.pFile : 0;
+
+            // 6. LINE発言 (p-line)
+            let lineRatio = Math.min(1, lineVal / ACTIVITY_MAX['p-line']);
+            totalEarnedScore += lineRatio * params.pLine;
+            
+            // パーセンテージ計算
+            let percentage = 0;
+            if (params.maxTotalScore > 0) {
+                // (獲得した合計点 / 合計最大基準点) * 100
+                percentage = Math.min(100, Math.floor((totalEarnedScore / params.maxTotalScore) * 100));
+            }
+
+            document.getElementById('final-score').innerText = percentage;
+
+            // 詳細データの表示
             document.getElementById('res-time').innerText = document.getElementById("timer-display").innerHTML;
             document.getElementById('res-photo').innerText = hasPhoto ? "あり" : "なし";
             document.getElementById('res-char').innerText = charVal;
             document.getElementById('res-thought').innerText = thoughtCount;
             document.getElementById('res-file').innerText = hasFile ? "あり" : "なし";
             document.getElementById('res-line').innerText = lineVal;
-
-            // スコア計算（仮）
-            let score = 0;
-            score += Math.floor(totalSeconds / 60); // 1分1点
-            score += hasPhoto ? 50 : 0;
-            score += charVal * 0.1;
-            score += thoughtCount * 20;
-            score += hasFile ? 100 : 0;
-            score += lineVal * 2;
-
-            let percentage = Math.min(100, Math.floor((score / 500) * 100));
-            document.getElementById('final-score').innerText = percentage;
             
             finalPercentage = percentage;
         }
         
-        // 【修正】マイページに戻る関数（貢献度とグループIDをURLパラメータに含める）
+        // マイページに戻る関数（貢献度とグループ名をURLパラメータに含める）
         function backToMyPage() {
-            // グループIDとスコアをURLパラメータに含めてmypage.htmlへ遷移
-            // 例: mypage.html?group=teamA&score=85
+            // currentGroupIdにはグループ名が入っています
             window.location.href = `mypage.html?group=${currentGroupId}&score=${finalPercentage}`;
         }
     </script>
