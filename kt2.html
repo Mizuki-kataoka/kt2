@@ -19,6 +19,9 @@
     <div id="workspace-screen" class="screen-container" style="display: none;">
         
         <header class="workspace-header">
+            <a href="mypage.html" style="text-decoration: none; color: #333; font-size: 14px; position: absolute; left: 20px; top: 20px;">
+                &lt; マイページに戻る
+            </a>
             <h2>ワークスペース</h2>
             <button onclick="finishWork()" class="btn-finish">作業を終了して評価を見る</button>
         </header>
@@ -101,7 +104,7 @@
                 </ul>
             </div>
 
-            <button onclick="location.reload()" class="btn-reset">トップに戻る</button>
+            <button onclick="backToMyPage()" class="btn-reset">マイページに戻る</button>
         </div>
     </div>
 
@@ -110,6 +113,14 @@
         let tInterval;
         let totalSeconds = 0;
         let thoughtCount = 0;
+        let finalPercentage = 0;
+        let currentGroupId = ''; // 【追加】現在のグループIDを保持する変数
+
+        // 【追加】ページ読み込み時にURLからグループIDを取得
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentGroupId = urlParams.get('group') || '';
+        };
 
         // --- スタート画面 -> 作業画面 ---
         function startWork() {
@@ -191,6 +202,15 @@
 
             let percentage = Math.min(100, Math.floor((score / 500) * 100));
             document.getElementById('final-score').innerText = percentage;
+            
+            finalPercentage = percentage;
+        }
+        
+        // 【修正】マイページに戻る関数（貢献度とグループIDをURLパラメータに含める）
+        function backToMyPage() {
+            // グループIDとスコアをURLパラメータに含めてmypage.htmlへ遷移
+            // 例: mypage.html?group=teamA&score=85
+            window.location.href = `mypage.html?group=${currentGroupId}&score=${finalPercentage}`;
         }
     </script>
 </body>
