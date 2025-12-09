@@ -40,6 +40,7 @@ header h1, header nav {
 }
 
 h1 {
+    font-family: 'Kosugi Maru', sans-serif;
     font-size: 2.5rem;
     padding-bottom: 10px;
     border-bottom: 3px solid #f9e2eb; /* 薄いピンクのボーダー */
