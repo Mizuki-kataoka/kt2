@@ -13,6 +13,7 @@ body {
 h1, h2, h3 {
     color: #cc6699; /* アクセントカラー（ローズピンク） */
     font-weight: 600;
+    text-align: center;
 }
 
 h1 {
