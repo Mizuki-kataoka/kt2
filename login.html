@@ -12,55 +12,77 @@
   </header>
 
   <main>
-   <form id="loginForm" method="get">
-  <!-- 区分選択 -->
-  <label for="role">区分:</label>
-  <select id="role" name="role" required>
-    <option value="">選択してください</option>
-    <option value="student">生徒</option>
-    <option value="professor">教授</option>
-  </select>
-  <br><br>
+    <form id="loginForm">
+      <label for="role">区分:</label>
+      <select id="role" name="role" required>
+        <option value="">選択してください</option>
+        <option value="student">生徒</option>
+        <option value="professor">教授</option>
+      </select>
+      <br><br>
 
-  <!-- 名前入力 -->
-  <label for="name">名前:</label>
-  <input type="text" id="name" name="name" required>
-  <br><br>
+      <label for="name">名前:</label>
+      <input type="text" id="name" name="name" required>
+      <br><br>
 
-  <!-- メールアドレス入力 -->
-  <label for="email">メールアドレス:</label>
-  <input type="email" id="email" name="email" required>
-  <br><br>
+      <label for="email">メールアドレス:</label>
+      <input type="email" id="email" name="email" required>
+      <br><br>
 
-  <!-- ログインボタン -->
-  <button type="submit">ログイン</button>
-</form>
-
-<script>
-  document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // デフォルトの送信を止める
-
-    const role = document.getElementById("role").value;
-
-    if (role === "professor") {
-      // 教授なら teacher.html に遷移
-      window.location.href = "teacher.html";
-    } else if (role === "student") {
-      // 生徒なら mypage.html に遷移
-      window.location.href = "mypage.html";
-    } else {
-      alert("区分を選択してください");
-    }
-  });
-</script>
+      <button type="submit">ログイン</button>
+    </form>
   </main>
 
   <footer>
     <p>&copy; 2025 あなたの頑張り見える化します</p>
   </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
+      authDomain: "isd-kt2.firebaseapp.com",
+      projectId: "isd-kt2",
+      storageBucket: "isd-kt2.appspot.com",
+      messagingSenderId: "302204280336",
+      appId: "1:302204280336:web:c9501e1a34618e9f46b495"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const role = document.getElementById("role").value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      try {
+        // Firestoreからユーザー検索
+        const q = query(collection(db, "users"), where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+
+          // 区分で遷移先を分岐
+          if (userData.role === "professor") {
+            window.location.href = `teacher.html?uid=${querySnapshot.docs[0].id}`;
+          } else {
+            window.location.href = `mypage.html?uid=${querySnapshot.docs[0].id}`;
+          }
+        } else {
+          alert("ユーザーが見つかりません。登録してください。");
+        }
+      } catch (e) {
+        console.error("ログインエラー:", e);
+        alert("ログインに失敗しました。");
+      }
+    });
+  </script>
 </body>
-
 </html>
-
-
-
