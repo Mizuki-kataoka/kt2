@@ -292,3 +292,27 @@ footer {
     font-size: 1.1rem;
     margin-bottom: 30px;
 }
+
+/* アイコンカラー選択部分 */
+#iconColor {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #ff99cc; /* ピンクの枠線 */
+  border-radius: 50%;        /* 丸くする */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(255, 153, 204, 0.4);
+  transition: transform 0.2s ease;
+}
+
+#iconColor:hover {
+  transform: scale(1.1); /* ホバーで少し大きく */
+}
+
+/* ラベルもかわいく */
+label[for="iconColor"] {
+  font-weight: bold;
+  color: #cc6699;
+  background-color: #fff0f6;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
