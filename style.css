@@ -316,3 +316,25 @@ label[for="iconColor"] {
   padding: 5px 10px;
   border-radius: 8px;
 }
+
+#iconColor {
+  -webkit-appearance: none; /* Safari/Chrome用に標準の見た目をリセット */
+  appearance: none;         /* 標準の見た目をリセット */
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;       /* 丸くする */
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* WebKit系ブラウザ用：色プレビュー部分を丸くする */
+#iconColor::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#iconColor::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;       /* プレビューも丸く */
+}
