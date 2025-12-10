@@ -1,183 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>マイページ</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <header>
-      <h1>👤 マイページ</h1>
-      <p>あなたの情報と所属グループの一覧を確認できます。</p>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <title>マイページ</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>👤 マイページ</h1>
+    <p>あなたの情報と所属グループの一覧を確認できます。</p>
+  </header>
 
-    <main>
-      <!-- アカウント情報 -->
-      <section>
-        <h2>アカウント情報</h2>
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-          <div
-            id="account-icon"
-            style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              background-color: #ccc; /* 初期色 */
-              color: white;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 20px;
-              margin-right: 15px;
-            "
-          >
-            <span id="account-initial">?</span>
-          </div>
-          <div>
-            <p><strong>ユーザー名:</strong> <span id="account-name"></span></p>
-            <p><strong>メールアドレス:</strong> <span id="account-email"></span></p>
-            <p><strong>区分:</strong> <span id="account-role"></span></p>
-            <p><strong>アイコンカラー:</strong> <span id="account-color"></span></p>
-          </div>
+  <main>
+    <!-- アカウント情報 -->
+    <section>
+      <h2>アカウント情報</h2>
+      <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <div
+          id="account-icon"
+          style="
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            margin-right: 15px;
+          "
+        >
+          <span id="account-initial">?</span>
         </div>
-      </section>
+        <div>
+          <p><strong>ユーザー名:</strong> <span id="account-name"></span></p>
+          <p><strong>メールアドレス:</strong> <span id="account-email"></span></p>
+          <p><strong>区分:</strong> <span id="account-role"></span></p>
+          <p><strong>アイコンカラー:</strong> <span id="account-color"></span></p>
+        </div>
+      </div>
+    </section>
 
-      <hr />
+    <hr />
 
-      <!-- 所属グループ一覧 -->
-      <section>
-        <h2>所属グループ一覧</h2>
-        <table border="1" style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="padding: 8px;">授業名</th>
-              <th style="padding: 8px;">グループ名</th>
-              <th style="padding: 8px;">貢献度 (仮)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding: 8px;">情報処理基礎</td>
-              <td style="padding: 8px;">
-                <a href="kt2.html?group=teamA">チームA</a>
-              </td>
-              <td style="padding: 8px;" id="contribution-teamA">85%</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px;">経済学入門</td>
-              <td style="padding: 8px;">
-                <a href="kt2.html?group=group3">第3グループ</a>
-              </td>
-              <td style="padding: 8px;" id="contribution-group3">70%</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px;">応用数学</td>
-              <td style="padding: 8px;">
-                <a href="kt2.html?group=mathLab">数理研</a>
-              </td>
-              <td style="padding: 8px;" id="contribution-mathLab">92%</td>
-            </tr>
-          </tbody>
-        </table>
-        <br />
-        <p>※ 貢献度は連携後に正確な値が表示されます。</p>
-      </section>
+    <!-- 所属グループ一覧 -->
+    <section>
+      <h2>所属グループ一覧</h2>
+      <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="padding: 8px;">授業名</th>
+            <th style="padding: 8px;">グループ名</th>
+            <th style="padding: 8px;">貢献度</th>
+          </tr>
+        </thead>
+        <tbody id="groups-table-body">
+          <!-- Firestoreから読み込んだグループがここに追加されます -->
+        </tbody>
+      </table>
+      <br />
+      <p>※ 貢献度は連携後に正確な値が表示されます。</p>
+    </section>
 
-      <hr />
+    <hr />
 
-      <!-- 新規グループ登録 -->
-      <section>
-        <h2>新規グループ登録</h2>
-        <p>
-          <a href="group.sentaku.html">
-            <button style="padding: 10px 20px; font-size: 16px;">
-              ➕ 新しいグループを登録する
-            </button>
-          </a>
-        </p>
-      </section>
-    </main>
-
-    <footer>
-      <p style="margin-top: 50px;">
-        &copy; 2025 あなたの頑張り見える化します
+    <!-- 新規グループ登録 -->
+    <section>
+      <h2>新規グループ登録</h2>
+      <p>
+        <a href="group.sentaku.html">
+          <button style="padding: 10px 20px; font-size: 16px;">
+            ➕ 新しいグループを登録する
+          </button>
+        </a>
       </p>
-    </footer>
+    </section>
+  </main>
 
-    <!-- Firestoreからユーザー情報を取得 -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <footer>
+    <p style="margin-top: 50px;">
+      &copy; 2025 あなたの頑張り見える化します
+    </p>
+  </footer>
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
-        authDomain: "isd-kt2.firebaseapp.com",
-        projectId: "isd-kt2",
-        storageBucket: "isd-kt2.appspot.com",
-        messagingSenderId: "302204280336",
-        appId: "1:302204280336:web:c9501e1a34618e9f46b495"
-      };
+  <!-- Firebase SDK & Firestore連携 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
+      authDomain: "isd-kt2.firebaseapp.com",
+      projectId: "isd-kt2",
+      storageBucket: "isd-kt2.appspot.com",
+      messagingSenderId: "302204280336",
+      appId: "1:302204280336:web:c9501e1a34618e9f46b495"
+    };
 
-      // URLパラメータからuidを取得
-      function getUrlParameter(name) {
-        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-        const results = regex.exec(location.search);
-        return results === null ? "" : decodeURIComponent(results[1]);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function getUrlParameter(name) {
+      const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+      const results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1]);
+    }
+
+    const uid = getUrlParameter("uid");
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      if (!uid) return;
+
+      // ユーザー情報の取得
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        document.getElementById("account-name").innerText = userData.name;
+        document.getElementById("account-email").innerText = userData.email;
+        document.getElementById("account-role").innerText = userData.role;
+        document.getElementById("account-color").innerText = userData.iconColor;
+
+        const iconDiv = document.getElementById("account-icon");
+        iconDiv.style.backgroundColor = userData.iconColor;
+        document.getElementById("account-initial").innerText = userData.name.charAt(0);
       }
 
-      const uid = getUrlParameter("uid");
+      // 所属グループの取得
+      const groupQuery = query(collection(db, "groups"), where("userId", "==", uid));
+      const groupSnap = await getDocs(groupQuery);
+      const tableBody = document.getElementById("groups-table-body");
+      tableBody.innerHTML = "";
 
-      window.addEventListener("DOMContentLoaded", async () => {
-        if (uid) {
-          const userRef = doc(db, "users", uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const userData = userSnap.data();
-
-            // テキスト情報を反映
-            document.getElementById("account-name").innerText = userData.name;
-            document.getElementById("account-email").innerText = userData.email;
-            document.getElementById("account-role").innerText = userData.role;
-            document.getElementById("account-color").innerText = userData.iconColor;
-
-            // アイコンカラーを反映
-            const iconDiv = document.getElementById("account-icon");
-            iconDiv.style.backgroundColor = userData.iconColor;
-
-            // 名前の頭文字をアイコンに表示
-            document.getElementById("account-initial").innerText = userData.name.charAt(0);
-          }
-        }
+      groupSnap.forEach((docSnap) => {
+        const group = docSnap.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="padding: 8px;">${group.className}</td>
+          <td style="padding: 8px;"><a href="kt2.html?group=${docSnap.id}">${group.groupName}</a></td>
+          <td style="padding: 8px;">${group.contribution}%</td>
+        `;
+        tableBody.appendChild(row);
       });
-    </script>
-
-    <!-- kt2.htmlから戻ったときに貢献度を更新 -->
-    <script>
-      function getUrlParameter(name) {
-        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-        const results = regex.exec(location.search);
-        return results === null ? "" : decodeURIComponent(results[1]);
-      }
-
-      function updateContributionFromURL() {
-        const score = getUrlParameter('score');
-        const groupId = getUrlParameter('group');
-
-        if (score !== '' && groupId !== '') {
-          const contributionCell = document.getElementById(`contribution-${groupId}`);
-          if (contributionCell) {
-            contributionCell.innerText = `${score}%`;
-            history.replaceState(null, document.title, "mypage.html");
-          }
-        }
-      }
-
-      updateContributionFromURL();
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
