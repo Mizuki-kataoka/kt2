@@ -13,16 +13,17 @@
     </header>
 
     <main>
+      <!-- アカウント情報 -->
       <section>
         <h2>アカウント情報</h2>
-
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
           <div
+            id="account-icon"
             style="
               width: 50px;
               height: 50px;
-              border-radius: 50%; /* 円形 */
-              background-color: #007bff; /* アイコンカラー（青を仮定） */
+              border-radius: 50%;
+              background-color: #ccc; /* 初期色 */
               color: white;
               display: flex;
               justify-content: center;
@@ -31,18 +32,20 @@
               margin-right: 15px;
             "
           >
-            A
+            <span id="account-initial">?</span>
           </div>
           <div>
-            <p><strong>ユーザー名:</strong> 山田太郎</p>
-            <p><strong>メールアドレス:</strong> yamada.taro@example.com</p>
-            <p><strong>アイコンカラー:</strong> #007bff (青)</p>
+            <p><strong>ユーザー名:</strong> <span id="account-name"></span></p>
+            <p><strong>メールアドレス:</strong> <span id="account-email"></span></p>
+            <p><strong>区分:</strong> <span id="account-role"></span></p>
+            <p><strong>アイコンカラー:</strong> <span id="account-color"></span></p>
           </div>
         </div>
       </section>
 
       <hr />
 
+      <!-- 所属グループ一覧 -->
       <section>
         <h2>所属グループ一覧</h2>
         <table border="1" style="width: 100%; border-collapse: collapse;">
@@ -75,7 +78,7 @@
               </td>
               <td style="padding: 8px;" id="contribution-mathLab">92%</td>
             </tr>
-            </tbody>
+          </tbody>
         </table>
         <br />
         <p>※ 貢献度は連携後に正確な値が表示されます。</p>
@@ -83,6 +86,7 @@
 
       <hr />
 
+      <!-- 新規グループ登録 -->
       <section>
         <h2>新規グループ登録</h2>
         <p>
@@ -101,37 +105,79 @@
       </p>
     </footer>
 
-    <script>
-        // URLのクエリパラメータから値を取得する関数
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            // 結果がなければ空文字列、あればデコードした値を返す
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        };
+    <!-- Firestoreからユーザー情報を取得 -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-        // kt2.htmlから戻ったときに貢献度を更新する関数
-        function updateContributionFromURL() {
-            const score = getUrlParameter('score');
-            const groupId = getUrlParameter('group'); // kt2.htmlから渡されるグループID
+      const firebaseConfig = {
+        apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
+        authDomain: "isd-kt2.firebaseapp.com",
+        projectId: "isd-kt2",
+        storageBucket: "isd-kt2.appspot.com",
+        messagingSenderId: "302204280336",
+        appId: "1:302204280336:web:c9501e1a34618e9f46b495"
+      };
 
-            if (score !== '' && groupId !== '') {
-                // グループIDに対応する貢献度表示セルを取得
-                const contributionCell = document.getElementById(`contribution-${groupId}`);
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
-                if (contributionCell) {
-                    contributionCell.innerText = `${score}%`;
-                    
-                    // スコアが反映された後、URLからパラメータを削除して履歴を置き換える
-                    // これにより、マイページをリロードしても古いスコアが適用されるのを防ぎます
-                    history.replaceState(null, document.title, "mypage.html");
-                }
-            }
+      // URLパラメータからuidを取得
+      function getUrlParameter(name) {
+        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        const results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1]);
+      }
+
+      const uid = getUrlParameter("uid");
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        if (uid) {
+          const userRef = doc(db, "users", uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+
+            // テキスト情報を反映
+            document.getElementById("account-name").innerText = userData.name;
+            document.getElementById("account-email").innerText = userData.email;
+            document.getElementById("account-role").innerText = userData.role;
+            document.getElementById("account-color").innerText = userData.iconColor;
+
+            // アイコンカラーを反映
+            const iconDiv = document.getElementById("account-icon");
+            iconDiv.style.backgroundColor = userData.iconColor;
+
+            // 名前の頭文字をアイコンに表示
+            document.getElementById("account-initial").innerText = userData.name.charAt(0);
+          }
         }
+      });
+    </script>
 
-        // ページ読み込み時に更新処理を実行
-        updateContributionFromURL();
+    <!-- kt2.htmlから戻ったときに貢献度を更新 -->
+    <script>
+      function getUrlParameter(name) {
+        const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        const results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1]);
+      }
+
+      function updateContributionFromURL() {
+        const score = getUrlParameter('score');
+        const groupId = getUrlParameter('group');
+
+        if (score !== '' && groupId !== '') {
+          const contributionCell = document.getElementById(`contribution-${groupId}`);
+          if (contributionCell) {
+            contributionCell.innerText = `${score}%`;
+            history.replaceState(null, document.title, "mypage.html");
+          }
+        }
+      }
+
+      updateContributionFromURL();
     </script>
   </body>
 </html>
