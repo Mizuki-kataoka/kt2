@@ -1,89 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>グループ登録画面</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <header>
-      <h1>📘 グループ登録</h1>
-      <p>授業ごとのグループを登録し、ドキュメントを共有できます。</p>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <title>マイページ</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>👤 マイページ</h1>
+    <p>あなたの情報と所属グループの一覧を確認できます。</p>
+  </header>
 
-    <main>
-      <form action="kt2.html" method="get" target="_blank">
-  <section>
-    <label for="class-name"><strong>授業名：</strong></label
-    ><br />
-    <input
-      type="text"
-      id="class-name"
-      name="course" 
-      placeholder="例：情報処理基礎"
-      required
-    />
-  </section>
-  <br />
+  <main>
+    <!-- アカウント情報 -->
+    <section>
+      <h2>アカウント情報</h2>
+      <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <div
+          id="account-icon"
+          style="
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            margin-right: 15px;
+          "
+        >
+          <span id="account-initial">?</span>
+        </div>
+        <div>
+          <p><strong>ユーザー名:</strong> <span id="account-name"></span></p>
+          <p><strong>メールアドレス:</strong> <span id="account-email"></span></p>
+          <p><strong>区分:</strong> <span id="account-role"></span></p>
+          <p><strong>アイコンカラー:</strong> <span id="account-color"></span></p>
+        </div>
+      </div>
+    </section>
 
-  <section>
-    <label for="group-name"><strong>グループ名：</strong></label
-    ><br />
-    <input
-      type="text"
-      id="group-name"
-      name="group" 
-      placeholder="例：チームA"
-      required
-    />
-  </section>
-  <br />
+    <hr />
 
-  <section>
-    <label for="members"><strong>メンバー名：</strong></label
-    ><br />
-    <textarea
-      id="members"
-      name="members"
-      rows="4"
-      placeholder="例：山田太郎, 佐藤花子, 鈴木一郎"
-      required
-    ></textarea>
-  </section>
-  <br />
+    <!-- 所属グループ一覧 -->
+    <section>
+      <h2>所属グループ一覧</h2>
+      <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="padding: 8px;">授業名</th>
+            <th style="padding: 8px;">グループ名</th>
+            <th style="padding: 8px;">貢献度</th>
+          </tr>
+        </thead>
+        <tbody id="groups-table-body">
+          <!-- Firestoreから読み込んだグループがここに追加されます -->
+        </tbody>
+      </table>
+      <br />
+      <p>※ 貢献度は連携後に正確な値が表示されます。</p>
+    </section>
 
-  <section>
-    <label for="document"><strong>ドキュメント登録：</strong></label
-    ><br />
-    <input type="file" id="document" name="document" multiple />
-  </section>
-  <br />
+    <hr />
 
-  <section>
-    <label for="line-link"><strong>LINE連携：</strong></label
-    ><br />
-    <input
-      type="text"
-      id="line-link"
-      name="line-link"
-      placeholder="LINEグループ招待リンクを入力"
-    />
-  </section>
-  <br />
+    <!-- 新規グループ登録 -->
+    <section>
+      <h2>新規グループ登録</h2>
+      <p>
+        <a href="group.sentaku.html">
+          <button style="padding: 10px 20px; font-size: 16px;">
+            ➕ 新しいグループを登録する
+          </button>
+        </a>
+      </p>
+    </section>
+  </main>
 
-  <input type="hidden" name="p-time" value="100">
-  <input type="hidden" name="p-photo" value="50">
-  <input type="hidden" name="p-char" value="100">
-  <input type="hidden" name="p-thought" value="150">
-  <input type="hidden" name="p-file" value="100">
-  <input type="hidden" name="p-line" value="50">
-  <input type="hidden" name="comment" value="今回の作業は計画通り進んでおり、非常に良かったです。">
-  <section>
-    <button type="submit">登録する</button>
-  </section>
-</form>
-    </main>
-  </body>
+  <footer>
+    <p style="margin-top: 50px;">
+      &copy; 2025 あなたの頑張り見える化します
+    </p>
+  </footer>
 
+  <!-- Firebase SDK & Firestore連携 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2TFRxULrSZ9MWl-UkArF4bx22UXP3a-Q",
+      authDomain: "isd-kt2.firebaseapp.com",
+      projectId: "isd-kt2",
+      storageBucket: "isd-kt2.appspot.com",
+      messagingSenderId: "302204280336",
+      appId: "1:302204280336:web:c9501e1a34618e9f46b495"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function getUrlParameter(name) {
+      const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+      const results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1]);
+    }
+
+    const uid = getUrlParameter("uid");
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      if (!uid) return;
+
+      // ユーザー情報の取得
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        document.getElementById("account-name").innerText = userData.name;
+        document.getElementById("account-email").innerText = userData.email;
+        document.getElementById("account-role").innerText = userData.role;
+        document.getElementById("account-color").innerText = userData.iconColor;
+
+        const iconDiv = document.getElementById("account-icon");
+        iconDiv.style.backgroundColor = userData.iconColor;
+        document.getElementById("account-initial").innerText = userData.name.charAt(0);
+      }
+
+      // 所属グループの取得
+      const groupQuery = query(collection(db, "groups"), where("userId", "==", uid));
+      const groupSnap = await getDocs(groupQuery);
+      const tableBody = document.getElementById("groups-table-body");
+      tableBody.innerHTML = "";
+
+      groupSnap.forEach((docSnap) => {
+        const group = docSnap.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="padding: 8px;">${group.className}</td>
+          <td style="padding: 8px;"><a href="kt2.html?group=${docSnap.id}">${group.groupName}</a></td>
+          <td style="padding: 8px;">${group.contribution}%</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    });
+  </script>
+</body>
 </html>
