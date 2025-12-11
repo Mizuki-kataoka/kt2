@@ -53,6 +53,7 @@
           <tr>
             <th style="padding: 8px;">授業名</th>
             <th style="padding: 8px;">グループ名</th>
+            <th style="padding: 8px;">メンバー</th> <!-- 追加 -->
             <th style="padding: 8px;">貢献度</th>
           </tr>
         </thead>
@@ -70,7 +71,7 @@
     <section>
       <h2>新規グループ登録</h2>
       <p>
-        <a href="group.sentaku.html">
+        <a href="group.sentaku.html?uid=" id="group-link">
           <button style="padding: 10px 20px; font-size: 16px;">
             ➕ 新しいグループを登録する
           </button>
@@ -116,10 +117,20 @@
       return results === null ? "" : decodeURIComponent(results[1]);
     }
 
-    const uid = getUrlParameter("uid");
+    // uidをURLまたはlocalStorageから取得
+    let uid = getUrlParameter("uid") || localStorage.getItem("uid");
+    if (uid) {
+      localStorage.setItem("uid", uid); // 常に保存しておく
+    }
 
     window.addEventListener("DOMContentLoaded", async () => {
-      if (!uid) return;
+      if (!uid) {
+        alert("ユーザーIDが取得できません。ログインからやり直してください。");
+        return;
+      }
+
+      // 新規グループ登録リンクにuidを付与
+      document.getElementById("group-link").href = `group.sentaku.html?uid=${encodeURIComponent(uid)}`;
 
       // ユーザー情報の取得
       const userRef = doc(db, "users", uid);
@@ -149,6 +160,7 @@
         row.innerHTML = `
           <td style="padding: 8px;">${group.className}</td>
           <td style="padding: 8px;"><a href="kt2.html?group=${docSnap.id}">${group.groupName}</a></td>
+          <td style="padding: 8px;">${group.members ? group.members.join(", ") : ""}</td>
           <td style="padding: 8px;">${group.contribution}%</td>
         `;
         tableBody.appendChild(row);
