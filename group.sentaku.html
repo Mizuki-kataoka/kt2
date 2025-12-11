@@ -68,7 +68,14 @@
       const results = regex.exec(location.search);
       return results === null ? "" : decodeURIComponent(results[1]);
     }
-    const uid = getUrlParameter("uid");
+    let uid = getUrlParameter("uid");
+
+    // localStorageから補完（安全策）
+    if (!uid) {
+      uid = localStorage.getItem("uid");
+    } else {
+      localStorage.setItem("uid", uid);
+    }
 
     // メンバー欄を追加する処理
     const membersArea = document.getElementById("members-area");
@@ -88,6 +95,11 @@
     // フォーム送信処理
     document.getElementById("groupForm").addEventListener("submit", async (event) => {
       event.preventDefault();
+
+      if (!uid) {
+        alert("ユーザーIDが取得できません。ログインからやり直してください。");
+        return;
+      }
 
       const className = document.getElementById("className").value;
       const groupName = document.getElementById("groupName").value;
@@ -109,10 +121,10 @@
           members, // 配列として保存
           contribution: Number(contribution),
           createdAt: new Date(),
-          userId: uid   // ← ここを追加
+          userId: uid   // ← 必須
         });
         alert("グループ登録が完了しました！");
-        window.location.href = `mypage.html?uid=${uid}`; // uid付きで遷移
+        window.location.href = `mypage.html?uid=${encodeURIComponent(uid)}`;
       } catch (e) {
         console.error("Error adding document: ", e);
         alert("登録に失敗しました。");
