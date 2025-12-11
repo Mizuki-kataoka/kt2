@@ -62,6 +62,14 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // URLパラメータから uid を取得
+    function getUrlParameter(name) {
+      const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+      const results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1]);
+    }
+    const uid = getUrlParameter("uid");
+
     // メンバー欄を追加する処理
     const membersArea = document.getElementById("members-area");
     const addMemberBtn = document.getElementById("addMemberBtn");
@@ -100,33 +108,16 @@
           groupName,
           members, // 配列として保存
           contribution: Number(contribution),
-          createdAt: new Date()
+          createdAt: new Date(),
+          userId: uid   // ← ここを追加
         });
         alert("グループ登録が完了しました！");
-        window.location.href = "mypage.html";
+        window.location.href = `mypage.html?uid=${uid}`; // uid付きで遷移
       } catch (e) {
         console.error("Error adding document: ", e);
         alert("登録に失敗しました。");
       }
     });
-
-    function getUrlParameter(name) {
-  const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-  const results = regex.exec(location.search);
-  return results === null ? "" : decodeURIComponent(results[1]);
-}
-
-const uid = getUrlParameter("uid");
-
-await addDoc(collection(db, "groups"), {
-  className,
-  groupName,
-  members,
-  contribution: Number(contribution),
-  createdAt: new Date(),
-  userId: uid   // ← これを追加
-});
   </script>
 </body>
 </html>
-
