@@ -109,6 +109,24 @@
         alert("登録に失敗しました。");
       }
     });
+
+    function getUrlParameter(name) {
+  const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+  const results = regex.exec(location.search);
+  return results === null ? "" : decodeURIComponent(results[1]);
+}
+
+const uid = getUrlParameter("uid");
+
+await addDoc(collection(db, "groups"), {
+  className,
+  groupName,
+  members,
+  contribution: Number(contribution),
+  createdAt: new Date(),
+  userId: uid   // ← これを追加
+});
   </script>
 </body>
 </html>
+
